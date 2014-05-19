@@ -6,23 +6,8 @@ using UnityEngine;
 namespace Loggery
 {
 
-    public enum LogLevel
-    {
-        Trace = 5,
-        Debug = 4,
-        Info = 3,
-        Warn = 2,
-        Error = 1,
-        Fatal = 0
-    }
-
     public class LoggeryLogger : ScriptableObject
     {
-
-        public int logLevel = (int) LogLevel.Info;
-
-        public Regex regexMessage = new Regex("");
-        public Regex regexName = new Regex("");
 
         private string _path;
         private string _fullName;
@@ -35,7 +20,15 @@ namespace Loggery
         private string GetFullName()
         {
             var frame = new StackFrame(3, false);
+
             var method = frame.GetMethod();
+
+            if (method == null)
+            {
+                frame = new StackFrame(2, false);
+                method = frame.GetMethod();
+            }
+
             _fullName = _path + "." + method.Name;
             return _fullName;
         }
@@ -47,7 +40,7 @@ namespace Loggery
 
         private void UnityLog(LogLevel logLevel, string message)
         {
-            if(regexMessage.IsMatch(message))
+            if(LoggeryManager.RegexMessage.IsMatch(message))
                 UnityEngine.Debug.Log(GetColorStartTag(logLevel) + System.DateTime.Now.ToString("HH:mm:ss.fff") + " " + logLevel + ": " + _fullName + "(): " + message + "</color>");
         }
 
@@ -58,7 +51,7 @@ namespace Loggery
 
         public void Trace(string message)
         {
-            if (logLevel >= (int) LogLevel.Trace  && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= LogLevel.Trace  && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Trace, message);
             }           
@@ -66,7 +59,7 @@ namespace Loggery
 
         public void Debug(string message)
         {
-            if (logLevel >= (int)LogLevel.Debug && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= LogLevel.Debug && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Debug, message);
             }
@@ -74,7 +67,7 @@ namespace Loggery
 
         public void Info(string message)
         {
-            if (logLevel >= (int)LogLevel.Info && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= LogLevel.Info && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Info, message);
             }
@@ -82,7 +75,7 @@ namespace Loggery
 
         public void Warn(string message)
         {
-            if (logLevel >= (int)LogLevel.Warn && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= LogLevel.Warn && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Warn, message);
             }
@@ -90,7 +83,7 @@ namespace Loggery
 
         public void Error(string message)
         {
-            if (logLevel >= (int)LogLevel.Error && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= LogLevel.Error && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Error, message);
             }
@@ -98,7 +91,7 @@ namespace Loggery
 
         public void Fatal(string message)
         {
-            if (logLevel >= (int)LogLevel.Fatal && regexName.IsMatch(GetFullName()))
+            if (LoggeryManager.LogLevel >= (int)LogLevel.Fatal && LoggeryManager.RegexName.IsMatch(GetFullName()))
             {
                 UnityLog(LogLevel.Fatal, message);
             }
