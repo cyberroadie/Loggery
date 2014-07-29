@@ -29,7 +29,7 @@ namespace Loggery
     {
         public LoggeryManager()
         {
-        
+            
         }
 
         public static int[] ColorChoiceIndex = new int[Enum.GetNames(typeof(LogColor)).Length];
@@ -43,9 +43,9 @@ namespace Loggery
             var method = frame.GetMethod();
             var declaringType = method.DeclaringType;
 
-            var LoggeryLogger = ScriptableObject.CreateInstance<LoggeryLogger>();
-            LoggeryLogger.Init(declaringType.FullName, ColorChoiceIndex);
-            return LoggeryLogger;
+            var loggeryLogger = ScriptableObject.CreateInstance<LoggeryLogger>();
+            if (declaringType != null) loggeryLogger.Init(declaringType.FullName, ColorChoiceIndex);
+            return loggeryLogger;
         }
     }
 }

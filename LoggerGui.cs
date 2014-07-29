@@ -18,13 +18,13 @@ namespace Loggery
         public int ImageHeight = 100;
         public int ImageWidth = 100;
 
-        private int _choiceIndex = (int) LogLevel.Info;
+        public int _choiceIndex = (int) LogLevel.Info;
         private string _regexMessage = "";
         private string _regexName = "";
-        public Texture2D colorPicker;
+//        public Texture2D colorPicker;
 
-        private SerializedProperty logLevel;
-        private int selected = 2;
+//        private SerializedProperty logLevel;
+//        private int selected = 2;
 
         private void OnEnable()
         {
@@ -42,14 +42,13 @@ namespace Loggery
             int previousChoiceIndex = _choiceIndex;
             _choiceIndex = EditorGUILayout.Popup("Log level ", previousChoiceIndex, _choices);
 
-            string previousRegexName = _regexName;
             _regexName = EditorGUILayout.TextField("Regex filter class/method", _regexName);
 
-            string previousRegexMessage = _regexMessage;
             _regexMessage = EditorGUILayout.TextField("Regex filter message", _regexMessage);
 
-            if (_choiceIndex != previousChoiceIndex || _regexName != previousRegexName ||
-                _regexMessage != previousRegexMessage)
+            if (_choiceIndex != (int)LoggeryManager.LogLevel || 
+                _regexName != LoggeryManager.RegexName.ToString() ||
+                _regexMessage != LoggeryManager.RegexMessage.ToString())
             {
                 LoggeryManager.LogLevel = (LogLevel) _choiceIndex;
                 LoggeryManager.RegexName = new Regex(_regexName.Trim());
@@ -60,8 +59,11 @@ namespace Loggery
             foreach (string choice in _choices)
             {
                 LoggeryManager.ColorChoiceIndex[i] = EditorGUILayout.Popup(choice, _previousColorChoiceIndex[i],
-                    _colorChoices);
-                _previousColorChoiceIndex[i] = LoggeryManager.ColorChoiceIndex[i];
+                           _colorChoices);
+                if (LoggeryManager.ColorChoiceIndex[i] != _previousColorChoiceIndex[i])
+                {
+                    _previousColorChoiceIndex[i] = LoggeryManager.ColorChoiceIndex[i];
+                }
                 i++;
             }
         }
